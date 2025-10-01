@@ -1,0 +1,11 @@
+.main{
+    margin-left: 3em;
+    margin-right: 3em;
+}
+p,h1,h2,h3{
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+}
+h2{
+    color: rgb(234, 147, 237);
+}
