@@ -1,10 +1,11 @@
 <script lang=ts>
+    import { resolve } from '$app/paths';
     let { data } = $props();
 </script>
 <h1>Projects</h1>
 
 {#each data.project_info as { route, title }}
-    <li><a href="projects/{route}">{title}</a></li>
+    <li><a href={resolve(`/projects/${route}`)}>{title}</a></li>
 {/each}
 
 <style>
