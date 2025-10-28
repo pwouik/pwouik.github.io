@@ -8,9 +8,6 @@
 	<nav>
 		<ul>
 			<li>
-				<a href="/projects">Projects</a>
-			</li>
-			<li>
 				<a href={pdfUrl}>Resumé</a>
 			</li>
 		</ul>

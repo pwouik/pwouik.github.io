@@ -2,5 +2,7 @@
 title: "Rust voxel engine"
 ---
 
-![Screenshot_20231021_164642](https://github.com/pwouik/rust_voxel_engine/assets/62726872/50cee9a9-ad2f-4857-951c-2861bb3fd4ba)
-![Screenshot_20231021_164517](https://github.com/pwouik/rust_voxel_engine/assets/62726872/14e1b078-f996-4efd-987f-893cf468ec6c)
+<span style="display: inline flex;align-items: center">
+<enhanced:img src="$lib/images/voxel1.png" alt="1" style="width:calc(100% - 2em);height: 100%;"/>
+<enhanced:img src="$lib/images/voxel2.png" alt="2" style="width:calc(100% - 2em);height: 100%;"/> 
+</span>
