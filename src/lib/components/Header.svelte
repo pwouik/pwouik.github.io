@@ -33,7 +33,9 @@
 	a {
 		text-decoration: none;
 		color: inherit;
-        font:bold 3rem 'Courier New', Courier, monospace;
+		font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight:bold;
+		font-size: 3em;
         margin-right: 1rem;
 		color: black;
 	}

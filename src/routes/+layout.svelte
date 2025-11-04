@@ -4,7 +4,7 @@
 
   import { type Snippet } from 'svelte';
   import Header from '$lib/components/Header.svelte';
-  import '$lib/styles/home.css'
+  import '$lib/styles/root.css'
 
   let { children } = $props();
 </script>

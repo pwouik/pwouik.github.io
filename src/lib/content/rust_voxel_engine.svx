@@ -2,7 +2,69 @@
 title: "Rust voxel engine"
 ---
 
+This project was my first large project started in C++, rewritten at some point in Rust. The initial goal was to experiment block interactions mechanics to create emergent gameplay.
+I went instead in the rabbithole of voxel rendering optimisation.
+
+# Data Structures
+
+## Initial Structure
+
+Blocks where stored initially in chunks of 32³ blocks as 8 bit identifiers in a flat array.
+These chunks are then stored in a hashmap that associate a 3D chunk position. This allow the world to extend indefinitely in all direction and load/unload the world on the fly when the player move.
+
+## Block palette
+
+A problem so far is the significant RAM usage for storing loaded blocks. Using 8 bit per block, we allow 256 block types and use about 4259MB when 101x101x13 chunks are loaded.
+Since I dont want to reduce the number of possible block type we have to look at data compression.
+Since the goal is to have a dynamic world that we can edit, I want to avoid having to decompress and recompress whole chunks everytime I need to read or modify a block state.
+Fortunately, there exists some techniques that allow that. I used here palette compression.
+
+Palette compression is based on the fact that a chunk rarely hold all possible block type in it.
+We the create a list of all types present. Depending on the number of block type, we can represent an index into this palette with generally fewer bits than the full 8 bits block type.
+The next challenge is efficiently storing an array of these indices.
+If we just pack everything densely using bit packing, we will have sometime have indice on the boundaries of the underlying data type (u8,u64...), which will require loading two element and many operation to stitch it back together.
+A solution is to use a large integer data type, for example a 64 bit integer, and compute how much indices we can fit inside. The remaining bits at the end are ignored.
+Now when we access a block, we divide the flattened block position to find the element, then use the current bit size to find the palette index using a simple bit shift and mask, and lastly get the true block type from the palette.
+
+Using this I am down to 689MB.
+One last trick is to have a special case when a single block type is present, as every indice will be 0, we can avoid storing them completely.
+I am now down to 280MB which is a x15 improvement.
+<enhanced:img src="$lib/images/voxel4.png" alt="bunch of voxels" style="width:40em;height: 100%;"/>
+
+Note that this is helped by the fact that my terrain generation is still pretty basic and doesn't use a lot of block types
+The palette and storage need to be rebuilt when you add block of different type to a chunk, but once the palette has grown, read and write are effectively O(1).
+The reduced memory usage allow loading larger worlds and make some areas of the engine faster as it have less data to handle.
+
+# Rendering
+There are many different methods to render voxels but we can separate them into two kinds:
+
+## Rasterization
+These methods use a surface representation, like a triangle mesh or a point cloud and convert it to pixels to draw on screen.
+This is the most common technique for rendering in 3D.
+GPU are heavily optimized for this and that make it the fastest solution for rendering voxels up to a certain amount.
+
+I my engine, I maintain a set of the last modified chunks, and generate meshes each frame.
+Initially I was generating triangle meshes, but that makes a lot of memory to transfer to the GPU and to work with.
+My algorithm is generating two triangle per visible face. That is a lot of redundant data as we actually only need the face position and direction.
+
+One solution is to use instancing to instance a face and just send the transformations to the GPU. However some GPUs expect a minimal instance size to batch work efficiently, so we can expect a significant overhead per instance.
+
+Another solution is to use a geometry shaders to generate faces based on the position and direction data. But for some reason, there are generally inefficient: [http://www.joshbarczak.com/blog/?p=667](http://www.joshbarczak.com/blog/?p=667).
+On top of that there are deprecated and not even present in the API I am using.
+
+But we dont actually need that to do something similar since we need to genereate a fixed number of vertices per face.
+Using a technique known as vertex pulling, I just draw the total amount of triangle without any vertex buffer and use vertex id to pull the data I need from a separeate buffer.
+
+I can then define any format for my face and generate vertices in the vertex shader.
+Using bit packing I can even fit all face information in 8 bytes, conpared to about 65 bytes using a regular mesh.
+
+## Raytracing
+TODO
+<enhanced:img src="$lib/images/voxel3.png" alt="bajillion voxels" style="width:40em;height: 100%;"/>
+
+
+# Gallery
 <span style="display: inline flex;align-items: center">
-<enhanced:img src="$lib/images/voxel1.png" alt="1" style="width:calc(100% - 2em);height: 100%;"/>
-<enhanced:img src="$lib/images/voxel2.png" alt="2" style="width:calc(100% - 2em);height: 100%;"/> 
+<enhanced:img src="$lib/images/voxel1.png" alt="voxel house" style="width:calc(100% - 2em);height: 100%;"/>
+<enhanced:img src="$lib/images/voxel2.png" alt="voxel caves" style="width:calc(100% - 2em);height: 100%;"/> 
 </span>

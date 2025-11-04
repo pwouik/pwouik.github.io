@@ -21,7 +21,7 @@
 {/each}
 </ul>
 <h2>Misc:</h2>
-<p>Research Internship at KAISt, Korea: <a href={reportUrl}>Report</a> </p>
+<p>Research Internship at KAIST, Korea: <a href={reportUrl}>Report</a> </p>
 
 <h3>Gallery:</h3>
 <div class="gallery">
@@ -46,12 +46,15 @@
         font-family: 'Courier New', Courier, monospace;
         color: white;
     }
+    h1,h2,h3{
+        text-decoration: underline;
+    }
     ul{
         list-style: none;
         padding-left: 0em;
     }
     img{
-        width: 35em;
+        width: 30em;
         height: 100%;
         box-shadow: 5px 5px 5px black;
         border-radius: 5px;

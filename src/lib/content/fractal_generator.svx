@@ -96,4 +96,4 @@ We decided the not use atomic operations as we estimated the loss to be quite lo
 #### Accumulation
 
 To get precise results, a trick I found is to not clear the depth buffer when the fractal or view hasn't changed.
-This allow producing very detailed image of fractals.
+This allow producing very detailed images of fractals.
